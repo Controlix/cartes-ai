@@ -27,7 +27,7 @@ Implement logic to extend the game when an end-game condition is met but a valid
 - **History Display:** Show this round in history with 0 points for both teams (or visual indicator), but preserve the record that it happened.
 
 **Litige Resolution Logic (Game Ending with Active Reserve)**
-- Detect condition: (`team1Score >= targetScore` OR `team2Score >= targetScore`) AND `reservePoints > 0`.
+- Detect condition: (`team1Score >= targetScore` OR `team2Score >= targetScore` OR `team1Score + reservePoints >= targetScore` OR `team2Score + reservePoints >= targetScore`) AND `reservePoints > 0`.
 - If detected, the NEXT round submitted is a "Resolution Round".
 - **Logic:**
     - Calculate round winner based on raw input.

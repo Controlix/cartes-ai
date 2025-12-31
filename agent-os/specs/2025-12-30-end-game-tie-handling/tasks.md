@@ -11,7 +11,12 @@ Total Tasks: 3 Groups
 **Dependencies:** None
 
 - [x] 1.0 Update Data Models and Logic Tests
-  - [x] 1.1 Write 2-8 focused tests for Game Logic Scenarios
+  - [ ] 1.1 Write focused tests for Game Logic Scenarios
+    - [x] Test Case 1: Game does not end if scores tied >= 1000
+    - [x] Test Case 2: Game does not end if active litige exists >= 1000
+    - [x] Test Case 3: "Tie-Breaker" round does not add points to total
+    - [ ] Test Case 4: 1071-1071 tie scenario (User specified)
+    - [ ] Test Case 5: 1029-951 Litige Resolution scenario (Potential winner case)
   - [x] 1.2 Update `Round` interface
   - [x] 1.3 Ensure logic tests fail (TDD) or pass if simple
 

@@ -271,6 +271,60 @@ describe('End Game Handling', () => {
     expect(within(header).getAllByText('1071')).toHaveLength(2)
     expect(within(header).queryByText('1171')).not.toBeInTheDocument()
   })
+
+  it('validates 1029-951 Litige Resolution scenario (Potential Winner)', async () => {
+    render(<Home />)
+    const inputs = screen.getAllByRole('spinbutton')
+    const form = screen.getByRole('form')
+
+    const playRound = (s1: number, s2: number, taker: 'team1' | 'team2') => {
+      fireEvent.change(inputs[0], { target: { value: String(s1) } })
+      fireEvent.change(inputs[1], { target: { value: String(s2) } })
+      const takerLabel = within(form).getByText(taker === 'team1' ? 'Wij' : 'Zij', { selector: 'span' })
+      fireEvent.click(takerLabel)
+      fireEvent.click(screen.getByRole('button', { name: /Ronde Opslaan/i }))
+    }
+
+    // Sequence to reach 948 - 870
+    // (Simplification to reach close enough scores)
+    // T1: 252*3 + 192 = 948. T2: 252*3 + 114 = 870.
+    // Let's just do it round by round as specified
+    playRound(162, 0, 'team1') // 252 - 0
+    playRound(162, 0, 'team1') // 504 - 0
+    playRound(0, 162, 'team2') // 504 - 252
+    playRound(0, 162, 'team2') // 504 - 504
+    playRound(62, 100, 'team2') // 566 - 604
+    playRound(62, 100, 'team2') // 628 - 704
+    playRound(100, 62, 'team1') // 728 - 766
+    playRound(100, 62, 'team1') // 828 - 828
+    playRound(120, 42, 'team1') // 948 - 870
+
+    const header = screen.getByRole('banner')
+    expect(within(header).getByText('948')).toBeInTheDocument()
+    expect(within(header).getByText('870')).toBeInTheDocument()
+
+    // Last round end 81-81 with T1 preneur
+    // T1: 948 stays 948. T2: 870 + 81 = 951. Res: 81.
+    playRound(81, 81, 'team1')
+    expect(within(header).getByText('948')).toBeInTheDocument()
+    expect(within(header).getByText('951')).toBeInTheDocument()
+    expect(screen.getByText(/Reserve: 81 punten/i)).toBeInTheDocument()
+
+    // Next round: 112 - 50 (T1 Wins)
+    // Should be Resolution Round because 948 + 81 > 1000
+    playRound(112, 50, 'team1')
+
+    // Expected: 948 + 81 = 1029. T2 stays 951.
+    expect(within(header).getByText('1029')).toBeInTheDocument()
+    expect(within(header).getByText('951')).toBeInTheDocument()
+    
+    // Check it ended
+    expect(await screen.findByText(/Spel Afgelopen/i)).toBeInTheDocument()
+    
+    // Ensure trick points were NOT added (1141 - 1001 case)
+    expect(within(header).queryByText('1141')).not.toBeInTheDocument()
+    expect(within(header).queryByText('1001')).not.toBeInTheDocument()
+  })
 })
 
         

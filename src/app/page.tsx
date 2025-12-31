@@ -36,7 +36,12 @@ export default function Home() {
 
     // 1. Check if we are in a special end-game resolution mode
     const isTieBreaker = (team1Score >= targetScore && team2Score >= targetScore && team1Score === team2Score);
-    const isLitigeResolution = (team1Score >= targetScore || team2Score >= targetScore) && reservePoints > 0;
+    const isLitigeResolution = (
+      team1Score >= targetScore || 
+      team2Score >= targetScore || 
+      (team1Score + reservePoints >= targetScore) || 
+      (team2Score + reservePoints >= targetScore)
+    ) && reservePoints > 0;
 
     if (isTieBreaker || isLitigeResolution) {
       // In these modes, the round points are ignored. 

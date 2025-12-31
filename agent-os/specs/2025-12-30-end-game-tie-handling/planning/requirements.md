@@ -37,6 +37,10 @@ I the second case, an extra round must decide to what team the reserve points sh
 **Follow-up 2:** Displaying "Round Points Ignored": Users still enter raw points, but we display only reserve points in history and add only reserve points to total?
 **Answer:** OK.
 
+**Follow-up 3:** (Bug Report) Litige Resolution Triggering: 
+**Issue:** If scores are 948-870 and a litige happens (81-81, T1 preneur), T2 reaches 951 but T1 stays at 948 with 81 in reserve. Since T1 *would have* reached 1029, the next round MUST be a resolution round where trick points (e.g. 112-50) are ignored and only the 81 reserve is awarded.
+**Result:** Final score should be 1029-951, not 1141-1001.
+
 ## Visual Assets
 No visual assets provided.
 
