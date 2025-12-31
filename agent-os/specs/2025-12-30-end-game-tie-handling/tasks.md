@@ -15,8 +15,9 @@ Total Tasks: 3 Groups
     - [x] Test Case 1: Game does not end if scores tied >= 1000
     - [x] Test Case 2: Game does not end if active litige exists >= 1000
     - [x] Test Case 3: "Tie-Breaker" round does not add points to total
-    - [ ] Test Case 4: 1071-1071 tie scenario (User specified)
-    - [ ] Test Case 5: 1029-951 Litige Resolution scenario (Potential winner case)
+    - [x] Test Case 4: 1071-1071 tie scenario (User specified)
+    - [x] Test Case 5: 1029-951 Litige Resolution scenario (Potential Winner)
+    - [ ] Test Case 6: Recursive Litige Resolution (Tie during resolution, fixed reserve)
   - [x] 1.2 Update `Round` interface
   - [x] 1.3 Ensure logic tests fail (TDD) or pass if simple
 

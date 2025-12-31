@@ -41,6 +41,10 @@ I the second case, an extra round must decide to what team the reserve points sh
 **Issue:** If scores are 948-870 and a litige happens (81-81, T1 preneur), T2 reaches 951 but T1 stays at 948 with 81 in reserve. Since T1 *would have* reached 1029, the next round MUST be a resolution round where trick points (e.g. 112-50) are ignored and only the 81 reserve is awarded.
 **Result:** Final score should be 1029-951, not 1141-1001.
 
+**Follow-up 4:** (Bug Report) Recursive Litige Resolution:
+**Issue:** If a Resolution Round results in a Litige (tie), the game must continue to yet another extra round.
+**Constraint:** The points from this tied extra round must NOT be added to the total score AND must NOT be added to the reserve. The reserve amount stays fixed at its original value until won.
+
 ## Visual Assets
 No visual assets provided.
 

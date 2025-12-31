@@ -46,16 +46,27 @@ export default function Home() {
     if (isTieBreaker || isLitigeResolution) {
       // In these modes, the round points are ignored. 
       // Only the winner matters to decide the game or award reserves.
-      const roundWinner = score1 > score2 ? 'team1' : 'team2';
+      
+      let roundWinner: 'team1' | 'team2' | null = null;
+      if (score1 > score2) roundWinner = 'team1';
+      else if (score2 > score1) roundWinner = 'team2';
       
       let awardedReserve1 = 0;
       let awardedReserve2 = 0;
       let newReserve = 0;
 
       if (isLitigeResolution) {
-        if (roundWinner === 'team1') awardedReserve1 = reservePoints;
-        else awardedReserve2 = reservePoints;
-        newReserve = 0;
+        if (roundWinner === 'team1') {
+          awardedReserve1 = reservePoints;
+          newReserve = 0;
+        } else if (roundWinner === 'team2') {
+          awardedReserve2 = reservePoints;
+          newReserve = 0;
+        } else {
+          // Recursive Litige: Tie during resolution.
+          // Keep existing reserve, award nothing this round.
+          newReserve = reservePoints;
+        }
       }
 
       const newRound: Round = {
@@ -66,7 +77,7 @@ export default function Home() {
         team1Reserve: awardedReserve1 > 0 ? awardedReserve1 : undefined,
         team2Reserve: awardedReserve2 > 0 ? awardedReserve2 : undefined,
         taker,
-        isLitige: false,
+        isLitige: roundWinner === null, // It is a litige if no winner
         isCapot: false,
         isDedans: false,
         isTieBreaker,
@@ -81,11 +92,14 @@ export default function Home() {
       const nextTotal1 = team1Score + awardedReserve1;
       const nextTotal2 = team2Score + awardedReserve2;
 
-      // If it was a tie-breaker, it definitely ends now (Sudden Death)
-      // If it was litige resolution, it ends if one team is ahead and above target
-      if (isTieBreaker || (nextTotal1 !== nextTotal2 && (nextTotal1 >= targetScore || nextTotal2 >= targetScore))) {
-        if (isTieBreaker) setTieBreakerWinner(roundWinner);
-        setGameStatus('finished');
+      // End game ONLY if we have a winner for this round AND criteria met
+      if (roundWinner !== null) {
+        // If it was a tie-breaker, it ends (Sudden Death)
+        // If it was litige resolution, it ends if one team is ahead and above target
+        if (isTieBreaker || (nextTotal1 !== nextTotal2 && (nextTotal1 >= targetScore || nextTotal2 >= targetScore))) {
+          if (isTieBreaker) setTieBreakerWinner(roundWinner);
+          setGameStatus('finished');
+        }
       }
       return;
     }

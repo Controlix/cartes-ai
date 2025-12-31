@@ -325,6 +325,60 @@ describe('End Game Handling', () => {
     expect(within(header).queryByText('1141')).not.toBeInTheDocument()
     expect(within(header).queryByText('1001')).not.toBeInTheDocument()
   })
+
+  it('validates Recursive Litige Resolution (Tie in extra round)', async () => {
+    render(<Home />)
+    const inputs = screen.getAllByRole('spinbutton')
+    const form = screen.getByRole('form')
+
+    const playRound = (s1: number, s2: number, taker: 'team1' | 'team2') => {
+      fireEvent.change(inputs[0], { target: { value: String(s1) } })
+      fireEvent.change(inputs[1], { target: { value: String(s2) } })
+      const takerLabel = within(form).getByText(taker === 'team1' ? 'Wij' : 'Zij', { selector: 'span' })
+      fireEvent.click(takerLabel)
+      fireEvent.click(screen.getByRole('button', { name: /Ronde Opslaan/i }))
+    }
+
+    // 1. Setup Resolution Scenario (Same as previous test: 948-870 -> Litige -> 948-951 Res 81)
+    // T1: 252*3 + 192 = 948. T2: 252*3 + 114 = 870.
+    playRound(162, 0, 'team1') 
+    playRound(162, 0, 'team1') 
+    playRound(0, 162, 'team2') 
+    playRound(0, 162, 'team2') 
+    playRound(62, 100, 'team2') 
+    playRound(62, 100, 'team2') 
+    playRound(100, 62, 'team1') 
+    playRound(100, 62, 'team1') 
+    playRound(120, 42, 'team1') 
+    // Litige Round
+    playRound(81, 81, 'team1')
+
+    const header = screen.getByRole('banner')
+    expect(within(header).getByText('948')).toBeInTheDocument()
+    expect(within(header).getByText('951')).toBeInTheDocument()
+    expect(screen.getByText(/Reserve: 81 punten/i)).toBeInTheDocument()
+
+    // 2. Play TIED Resolution Round (81-81)
+    playRound(81, 81, 'team2') // Taker doesn't matter for logic, but must supply one
+
+    // 3. Verify State
+    // Game NOT finished
+    expect(screen.queryByText(/Spel Afgelopen/i)).not.toBeInTheDocument()
+    // Scores UNCHANGED (948-951)
+    expect(within(header).getByText('948')).toBeInTheDocument()
+    expect(within(header).getByText('951')).toBeInTheDocument()
+    // Reserve UNCHANGED (81) - Should NOT be 162
+    expect(screen.getByText(/Reserve: 81 punten/i)).toBeInTheDocument()
+    expect(screen.queryByText(/162 punten/i)).not.toBeInTheDocument()
+
+    // 4. Play Winner Round
+    playRound(100, 62, 'team1')
+
+    // 5. Verify Finish
+    expect(await screen.findByText(/Spel Afgelopen/i)).toBeInTheDocument()
+    // T1 gets reserve: 948 + 81 = 1029.
+    expect(within(header).getByText('1029')).toBeInTheDocument()
+  })
 })
 
         
