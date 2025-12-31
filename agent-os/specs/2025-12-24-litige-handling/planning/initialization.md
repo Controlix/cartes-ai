@@ -1,0 +1,1 @@
+Le litige est un cas de figure rare où chacune des équipes totalise exactement le même nombre de points. L'équipe qui défend marque immédiatement ses points. Ceux de l'équipe du preneur seront acquis par le vainqueur de la donne suivante.
