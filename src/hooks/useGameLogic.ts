@@ -1,4 +1,7 @@
 import { useState, useMemo } from 'react';
+
+import { processRound, GameState } from '@/logic/GameEngine';
+import { GameStateContext, RoundInput } from '@/logic/types';
 import { appConfig } from '@/config/appConfig';
 import { Round } from '@/types/Round';
 
@@ -27,162 +30,52 @@ export const useGameLogic = () => {
   const handleRoundSubmit = (score1: number, score2: number, taker: 'team1' | 'team2' = 'team1') => {
     if (gameStatus === 'finished') return;
 
-    // 1. Check if we are in a special end-game resolution mode
-    const isTieBreaker = (team1Score >= targetScore && team2Score >= targetScore && team1Score === team2Score);
-    const isLitigeResolution = (
-      team1Score >= targetScore || 
-      team2Score >= targetScore || 
-      (team1Score + reservePoints >= targetScore) || 
-      (team2Score + reservePoints >= targetScore)
-    ) && reservePoints > 0;
-
-    if (isTieBreaker || isLitigeResolution) {
-      let roundWinner: 'team1' | 'team2' | null = null;
-      if (score1 > score2) roundWinner = 'team1';
-      else if (score2 > score1) roundWinner = 'team2';
-      
-      let awardedReserve1 = 0;
-      let awardedReserve2 = 0;
-      let newReserve = 0;
-
-      if (isLitigeResolution) {
-        if (roundWinner === 'team1') {
-          awardedReserve1 = reservePoints;
-          newReserve = 0;
-        } else if (roundWinner === 'team2') {
-          awardedReserve2 = reservePoints;
-          newReserve = 0;
-        } else {
-          // Recursive Litige: Tie during resolution.
-          // Keep existing reserve, award nothing this round.
-          newReserve = reservePoints;
-        }
-      }
-
-      const newRound: Round = {
-        id: crypto.randomUUID(),
-        number: rounds.length + 1,
-        team1Score: 0,
-        team2Score: 0,
-        team1Reserve: awardedReserve1 > 0 ? awardedReserve1 : undefined,
-        team2Reserve: awardedReserve2 > 0 ? awardedReserve2 : undefined,
-        taker,
-        isLitige: roundWinner === null, // It is a litige if no winner
-        isCapot: false,
-        isDedans: false,
-        isTieBreaker,
-        isLitigeResolution,
-      };
-
-      const newRounds = [...rounds, newRound];
-      setRounds(newRounds);
-      setReservePoints(newReserve);
-
-      // Re-evaluate game status
-      const nextTotal1 = team1Score + awardedReserve1;
-      const nextTotal2 = team2Score + awardedReserve2;
-
-      // End game ONLY if we have a winner for this round AND criteria met
-      if (roundWinner !== null) {
-        // If it was a tie-breaker, it ends (Sudden Death)
-        // If it was litige resolution, it ends if one team is ahead and above target
-        if (isTieBreaker || (nextTotal1 !== nextTotal2 && (nextTotal1 >= targetScore || nextTotal2 >= targetScore))) {
-          if (isTieBreaker) setTieBreakerWinner(roundWinner);
-          setGameStatus('finished');
-        }
-      }
-      return;
-    }
-
-    let s1 = score1;
-    let s2 = score2;
-    let r1 = 0;
-    let r2 = 0;
-    let newReserve = reservePoints;
-    let isLitige = false;
-    let isCapot = false;
-    let isDedans = false;
-    let contestedPoints = undefined;
-
-    // 1. Check for Litige
-    if (score1 === score2) {
-      isLitige = true;
-      contestedPoints = score1;
-      if (taker === 'team1') {
-        s1 = 0;
-        s2 = score2;
-        newReserve += score1;
-      } else {
-        s2 = 0;
-        s1 = score1;
-        newReserve += score2;
-      }
-    } 
-    // 2. Check for Capot
-    else if (score1 === 162 || score2 === 162 || score1 === 252 || score2 === 252) {
-      isCapot = true;
-      if (score1 >= 162) {
-        s1 = 252;
-        r1 = reservePoints;
-        s2 = 0;
-      } else {
-        s2 = 252;
-        r2 = reservePoints;
-        s1 = 0;
-      }
-      newReserve = 0;
-    }
-    // 3. Check for Dedans
-    else if ((taker === 'team1' && score1 < score2) || (taker === 'team2' && score2 < score1)) {
-      isDedans = true;
-      if (taker === 'team1') {
-        s1 = 0;
-        s2 = 162;
-        r2 = reservePoints;
-      } else {
-        s2 = 0;
-        s1 = 162;
-        r1 = reservePoints;
-      }
-      newReserve = 0;
-    }
-    // 4. Normal Win
-    else {
-      if (score1 > score2) {
-        s1 = score1;
-        r1 = reservePoints;
-        s2 = score2;
-      } else {
-        s2 = score2;
-        r2 = reservePoints;
-        s1 = score1;
-      }
-      newReserve = 0;
-    }
-
-    const newRound: Round = {
-      id: crypto.randomUUID(),
-      number: rounds.length + 1,
-      team1Score: s1,
-      team2Score: s2,
-      team1Reserve: r1 > 0 ? r1 : undefined,
-      team2Reserve: r2 > 0 ? r2 : undefined,
-      taker,
-      isLitige,
-      isCapot,
-      isDedans,
-      contestedPoints,
+    const context: GameStateContext = {
+      team1Score,
+      team2Score,
+      reservePoints,
+      targetScore,
+      roundsPlayed: rounds.length
     };
+
+    const input: RoundInput = {
+      score1,
+      score2,
+      taker
+    };
+
+    const { newRound, newReserve, roundWinner, gameState } = processRound(context, input);
 
     const newRounds = [...rounds, newRound];
     setRounds(newRounds);
     setReservePoints(newReserve);
 
-    const newTotal1 = team1Score + s1 + r1;
-    const newTotal2 = team2Score + s2 + r2;
+    // Calculate new totals to check game end condition
+    const nextTotal1 = team1Score + newRound.team1Score + (newRound.team1Reserve || 0);
+    const nextTotal2 = team2Score + newRound.team2Score + (newRound.team2Reserve || 0);
 
-    if ((newTotal1 >= targetScore || newTotal2 >= targetScore) && newTotal1 !== newTotal2 && !isLitige) {
-      setGameStatus('finished');
+    // Check for Game Over based on State returned by Engine
+    // The Engine determined the state used for processing. We use that context to decide termination.
+    
+    if (gameState === GameState.TIE_BREAKER) {
+      // Sudden Death: Ends if we have a winner
+      if (roundWinner !== null) {
+        setTieBreakerWinner(roundWinner);
+        setGameStatus('finished');
+      }
+    } else if (gameState === GameState.LITIGE_RESOLUTION) {
+      // Resolution: Ends if winner creates lead >= target
+      if (roundWinner !== null) {
+        // Check if the resolution actually ended the game (one team ahead and >= target)
+        if (nextTotal1 !== nextTotal2 && (nextTotal1 >= targetScore || nextTotal2 >= targetScore)) {
+          setGameStatus('finished');
+        }
+      }
+    } else {
+      // Standard Round
+      if (roundWinner !== null && (nextTotal1 >= targetScore || nextTotal2 >= targetScore) && nextTotal1 !== nextTotal2) {
+        setGameStatus('finished');
+      }
     }
   };
 

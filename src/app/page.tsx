@@ -1,10 +1,10 @@
 'use client'
 
-import ScoreHeader from '@/components/ScoreHeader';
-import RoundInputForm from '@/components/RoundInputForm';
 import GameHistory from '@/components/GameHistory';
-import ReserveDisplay from '@/components/ReserveDisplay';
 import GameOverDisplay from '@/components/GameOverDisplay';
+import ReserveDisplay from '@/components/ReserveDisplay';
+import RoundInputForm from '@/components/RoundInputForm';
+import ScoreHeader from '@/components/ScoreHeader';
 import { useGameLogic } from '@/hooks/useGameLogic';
 
 export default function Home() {
