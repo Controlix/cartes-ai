@@ -9,7 +9,9 @@ export interface Round {
   isLitige?: boolean;
   isCapot?: boolean;
   isDedans?: boolean;
-  isTieBreaker?: boolean;
-  isLitigeResolution?: boolean;
-  awardedReserve?: number;
-}
+    isTieBreaker?: boolean;
+    isLitigeResolution?: boolean;
+    awardedReserve?: number;
+    contestedPoints?: number;
+  }
+  

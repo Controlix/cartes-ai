@@ -112,10 +112,12 @@ export default function Home() {
     let isLitige = false;
     let isCapot = false;
     let isDedans = false;
+    let contestedPoints = undefined;
 
     // 1. Check for Litige
     if (score1 === score2) {
       isLitige = true;
+      contestedPoints = score1;
       if (taker === 'team1') {
         s1 = 0;
         s2 = score2;
@@ -179,6 +181,7 @@ export default function Home() {
       isLitige,
       isCapot,
       isDedans,
+      contestedPoints,
     };
 
     const newRounds = [...rounds, newRound];

@@ -1,0 +1,1 @@
+When a litige occurs, put the points of the playing team for that round between brackets in the game history. Visually the zero points can remain as-is, but the scored points should be visible in the history.

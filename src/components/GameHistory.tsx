@@ -30,7 +30,8 @@ const GameHistory: React.FC<GameHistoryProps> = ({ rounds }) => {
     isCapot: boolean = false, 
     isDedans: boolean = false,
     isTieBreaker: boolean = false,
-    isLitigeResolution: boolean = false
+    isLitigeResolution: boolean = false,
+    contestedPoints?: number
   ) => {
     const isZero = score === 0 && !isLitigeResolution;
     return (
@@ -42,6 +43,11 @@ const GameHistory: React.FC<GameHistoryProps> = ({ rounds }) => {
         }`}>
           <span className="flex items-center gap-1">
             {score}
+            {isLitige && score === 0 && contestedPoints !== undefined && (
+              <span className="text-[11px] font-normal text-gray-400 ml-0.5">
+                ({contestedPoints})
+              </span>
+            )}
             {isCapot && score > 0 && <Crown size={12} className="text-yellow-500 fill-yellow-500" />}
             {isDedans && score > 0 && <ThumbsDown size={12} className="text-red-400" />}
           </span>
@@ -90,8 +96,8 @@ const GameHistory: React.FC<GameHistoryProps> = ({ rounds }) => {
                 )}
               </div>
             </div>
-            {renderScore(round.team1Score, round.team1Reserve, true, round.isLitige, round.isCapot, round.isDedans, round.isTieBreaker, round.isLitigeResolution)}
-            {renderScore(round.team2Score, round.team2Reserve, false, round.isLitige, round.isCapot, round.isDedans, round.isTieBreaker, round.isLitigeResolution)}
+            {renderScore(round.team1Score, round.team1Reserve, true, round.isLitige, round.isCapot, round.isDedans, round.isTieBreaker, round.isLitigeResolution, round.contestedPoints)}
+            {renderScore(round.team2Score, round.team2Reserve, false, round.isLitige, round.isCapot, round.isDedans, round.isTieBreaker, round.isLitigeResolution, round.contestedPoints)}
           </div>
         ))}
         <div ref={bottomRef} />
