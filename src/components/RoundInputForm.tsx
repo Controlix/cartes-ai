@@ -39,13 +39,12 @@ const RoundInputForm: React.FC<RoundInputFormProps> = ({
 
     const sum = s1 + s2
     
-    // Valid scenarios:
+    // Valid scenario:
     // 1. Normal round: Sum is exactly 162
-    // 2. Capot: Sum is 252 AND one team has 0
+    // (Capot 252 is handled automatically by engine when one team has 162)
     const isNormalRound = sum === 162
-    const isCapot = sum === 252 && (s1 === 0 || s2 === 0)
 
-    if (!isNormalRound && !isCapot) {
+    if (!isNormalRound) {
       setError(translations.roundInput.errorInvalidSum)
       return
     }

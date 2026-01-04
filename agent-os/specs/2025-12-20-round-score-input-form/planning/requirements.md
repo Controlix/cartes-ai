@@ -8,10 +8,10 @@ Round Score Input Form — Create a form to input scores for a single round for 
 ### First Round Questions
 
 **Q1:** I assume we should provide two input fields (one for each team). If the user enters points for one team, should we automatically calculate the remaining points for the other team?
-**Answer:** We let both teams enter their score; that should sum up to 162 (or 252). If the sum is wrong, that should prevent from continuing until the scores are corrected.
+**Answer:** We let both teams enter their score; that should sum up to 162. If the sum is wrong, that should prevent from continuing until the scores are corrected.
 
 **Q2:** How should we handle "Capot" (252 points)?
-**Answer:** Handled via the validation rule (sum can be 252).
+**Answer:** Capot is now handled automatically by the game engine when a team reaches 162. Therefore, the input form should NOT allow entering 252. The user simply enters 162-0 and the system converts it.
 
 **Q3:** I'm thinking the form should appear as a modal or a dedicated section below the total scores. Which placement do you prefer?
 **Answer:** A dedicated location is fine.
@@ -20,7 +20,7 @@ Round Score Input Form — Create a form to input scores for a single round for 
 **Answer:** There should be a submit button in case the sum is correct. No fancy cancel or clear is needed, as we will automate that in a later stage.
 
 **Q5:** For validation, should we prevent submission if the total doesn't equal a valid Belot round sum?
-**Answer:** Yes, strict validation. Sum must be 162 OR 252.
+**Answer:** Yes, strict validation. Sum must be exactly 162.
 
 **Q6:** Are there any other specific "declarations" (like "tierce", "fifty", etc.) that need to be part of this input form now?
 **Answer:** No, we will not count any declaration for now.
@@ -49,7 +49,7 @@ No visual files found.
 - **Input Fields:** Two number input fields, one for each team.
 - **Validation:**
   - Inputs must be non-negative integers.
-  - The sum of both inputs MUST be exactly **162** OR **252** (for Capot).
+  - The sum of both inputs MUST be exactly **162**.
   - Submit button should be disabled or show an error if validation fails.
 - **Submission:**
   - Clicking "Submit" (when valid) should trigger an action to update the game state (to be handled by the parent component).
@@ -62,7 +62,7 @@ No visual files found.
 ### Scope Boundaries
 **In Scope:**
 - The UI form (inputs + submit button).
-- Client-side validation logic (Sum == 162 || 252).
+- Client-side validation logic (Sum == 162).
 - Error state display (visual feedback if sum is wrong).
 
 **Out of Scope:**

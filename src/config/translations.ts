@@ -12,7 +12,7 @@ export const translations = {
     placeholder: '0',
     submitButton: 'Ronde Opslaan',
     errorNegative: 'Scores mogen niet negatief zijn',
-    errorInvalidSum: 'Totaal moet 162 of 252 zijn (Capot vereist 252-0)',
+    errorInvalidSum: 'Totaal moet 162 zijn',
   },
   game: {
     targetScoreLabel: 'Doelscore:',
