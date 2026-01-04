@@ -12,6 +12,7 @@ export interface RoundInput {
   score1: number;
   score2: number;
   taker: 'team1' | 'team2';
+  belotTeam?: 'team1' | 'team2';
 }
 
 export interface RoundResult {

@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Round } from '@/types/Round';
 import { translations } from '@/config/translations';
 import { Crown, ThumbsDown, Scale } from 'lucide-react';
+import BelotIcon from './BelotIcon';
 
 interface GameHistoryProps {
   rounds: Round[];
@@ -29,7 +30,8 @@ const GameHistory: React.FC<GameHistoryProps> = ({
     isDedans: boolean = false,
     isTieBreaker: boolean = false,
     isLitigeResolution: boolean = false,
-    contestedPoints?: number
+    contestedPoints?: number,
+    hasBelot: boolean = false
   ) => {
     const isZero = score === 0 && !isLitigeResolution;
     return (
@@ -47,6 +49,7 @@ const GameHistory: React.FC<GameHistoryProps> = ({
               </span>
             )}
             {isCapot && score > 0 && <Crown size={12} className="text-yellow-500 fill-yellow-500" />}
+            {hasBelot && <BelotIcon size={20} className={isTeam1 ? "text-blue-500" : "text-red-500"} />}
             {isDedans && score > 0 && <ThumbsDown size={12} className="text-red-400" />}
           </span>
           {reserve > 0 && (
@@ -100,8 +103,8 @@ const GameHistory: React.FC<GameHistoryProps> = ({
                   )}
                 </div>
               </div>
-              {renderScore(round.team1Score, round.team1Reserve, true, round.isLitige, round.isCapot, round.isDedans, round.isTieBreaker, round.isLitigeResolution, round.contestedPoints)}
-              {renderScore(round.team2Score, round.team2Reserve, false, round.isLitige, round.isCapot, round.isDedans, round.isTieBreaker, round.isLitigeResolution, round.contestedPoints)}
+              {renderScore(round.team1Score, round.team1Reserve, true, round.isLitige, round.isCapot, round.isDedans, round.isTieBreaker, round.isLitigeResolution, round.contestedPoints, round.belotTeam === 'team1')}
+              {renderScore(round.team2Score, round.team2Reserve, false, round.isLitige, round.isCapot, round.isDedans, round.isTieBreaker, round.isLitigeResolution, round.contestedPoints, round.belotTeam === 'team2')}
             </div>
           ))}
           <div ref={bottomRef} />

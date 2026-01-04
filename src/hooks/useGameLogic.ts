@@ -27,7 +27,7 @@ export const useGameLogic = () => {
 
   const targetScore = appConfig.targetScore;
 
-  const handleRoundSubmit = (score1: number, score2: number, taker: 'team1' | 'team2' = 'team1') => {
+  const handleRoundSubmit = (score1: number, score2: number, taker: 'team1' | 'team2' = 'team1', belotTeam?: 'team1' | 'team2') => {
     if (gameStatus === 'finished') return;
 
     const context: GameStateContext = {
@@ -41,7 +41,8 @@ export const useGameLogic = () => {
     const input: RoundInput = {
       score1,
       score2,
-      taker
+      taker,
+      belotTeam
     };
 
     const { newRound, newReserve, roundWinner, gameState } = processRound(context, input);

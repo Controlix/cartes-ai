@@ -17,7 +17,7 @@ describe('RoundInputForm Logic', () => {
     
     fireEvent.click(screen.getByRole('button', { name: /Ronde Opslaan/i }))
     
-    expect(mockSubmit).toHaveBeenCalledWith(100, 62, 'team1')
+    expect(mockSubmit).toHaveBeenCalledWith(100, 62, 'team1', undefined)
   })
 
   it('allows selecting a different taker', () => {
@@ -31,7 +31,22 @@ describe('RoundInputForm Logic', () => {
     
     fireEvent.click(screen.getByRole('button', { name: /Ronde Opslaan/i }))
     
-    expect(mockSubmit).toHaveBeenCalledWith(100, 62, 'team2')
+    expect(mockSubmit).toHaveBeenCalledWith(100, 62, 'team2', undefined)
+  })
+
+  it('allows selecting Belot for a team', () => {
+    render(<RoundInputForm onSubmit={mockSubmit} />)
+    
+    const belotButtons = screen.getAllByText(/BELOT/i)
+    fireEvent.click(belotButtons[0]) // Team 1 Belot
+    
+    const inputs = screen.getAllByRole('spinbutton')
+    fireEvent.change(inputs[0], { target: { value: '100' } })
+    fireEvent.change(inputs[1], { target: { value: '62' } })
+    
+    fireEvent.click(screen.getByRole('button', { name: /Ronde Opslaan/i }))
+    
+    expect(mockSubmit).toHaveBeenCalledWith(100, 62, 'team1', 'team1')
   })
 
   it('does not submit when sum is incorrect', () => {

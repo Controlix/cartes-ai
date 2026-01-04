@@ -11,6 +11,7 @@ export const translations = {
     team2Label: 'Score Zij',
     placeholder: '0',
     submitButton: 'Ronde Opslaan',
+    belotLabel: 'Belot',
     errorNegative: 'Scores mogen niet negatief zijn',
     errorInvalidSum: 'Totaal moet 162 zijn',
   },

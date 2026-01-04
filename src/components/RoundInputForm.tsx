@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
+import BelotIcon from './BelotIcon'
 import { translations } from '@/config/translations'
 
 interface RoundInputFormProps {
-  onSubmit: (score1: number, score2: number, taker: 'team1' | 'team2') => void
+  onSubmit: (score1: number, score2: number, taker: 'team1' | 'team2', belotTeam?: 'team1' | 'team2') => void
   disabled?: boolean
   team1Name?: string
   team2Name?: string
@@ -17,6 +18,7 @@ const RoundInputForm: React.FC<RoundInputFormProps> = ({
   const [score1, setScore1] = useState<string>('')
   const [score2, setScore2] = useState<string>('')
   const [taker, setTaker] = useState<'team1' | 'team2'>('team1')
+  const [belotTeam, setBelotTeam] = useState<'team1' | 'team2' | null>(null)
   const [error, setError] = useState<string>('')
 
   const handleScoreChange = (
@@ -24,6 +26,11 @@ const RoundInputForm: React.FC<RoundInputFormProps> = ({
   ) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setter(e.target.value);
   };
+
+  const toggleBelot = (team: 'team1' | 'team2') => {
+    if (disabled) return
+    setBelotTeam(prev => prev === team ? null : team)
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -50,9 +57,10 @@ const RoundInputForm: React.FC<RoundInputFormProps> = ({
     }
 
     setError('')
-    onSubmit(s1, s2, taker)
+    onSubmit(s1, s2, taker, belotTeam || undefined)
     setScore1('')
     setScore2('')
+    setBelotTeam(null)
   }
 
   return (
@@ -96,6 +104,37 @@ const RoundInputForm: React.FC<RoundInputFormProps> = ({
           <span className="text-xs uppercase font-medium text-gray-400">Preneur:</span>
           <span>{team2Name}</span>
         </label>
+      </div>
+
+      {/* Belot Selection */}
+      <div className="flex justify-center gap-4 mb-6">
+        <button
+          type="button"
+          onClick={() => toggleBelot('team1')}
+          disabled={disabled}
+          className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border transition-all ${
+            belotTeam === 'team1'
+              ? 'bg-blue-100 border-blue-300 text-blue-700 shadow-inner'
+              : 'bg-white border-gray-200 text-gray-400 hover:border-gray-300'
+          }`}
+        >
+          <span className="text-xs font-bold uppercase">{translations.roundInput.belotLabel}</span>
+          {belotTeam === 'team1' && <BelotIcon size={28} className="text-blue-600" />}
+        </button>
+
+        <button
+          type="button"
+          onClick={() => toggleBelot('team2')}
+          disabled={disabled}
+          className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border transition-all ${
+            belotTeam === 'team2'
+              ? 'bg-red-100 border-red-300 text-red-700 shadow-inner'
+              : 'bg-white border-gray-200 text-gray-400 hover:border-gray-300'
+          }`}
+        >
+          <span className="text-xs font-bold uppercase">{translations.roundInput.belotLabel}</span>
+          {belotTeam === 'team2' && <BelotIcon size={28} className="text-red-600" />}
+        </button>
       </div>
 
       <div className="flex gap-4 mb-6">

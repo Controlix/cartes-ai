@@ -39,4 +39,20 @@ describe('GameHistory Component', () => {
     const rows = screen.getAllByTestId('round-row')
     expect(rows).toHaveLength(2)
   })
+
+  it('renders both Capot and Belot icons', () => {
+    const roundWithCapotAndBelot: Round[] = [
+      { 
+        id: '3', number: 3, team1Score: 272, team2Score: 0, 
+        isCapot: true, belotTeam: 'team1' 
+      }
+    ]
+    render(<GameHistory rounds={roundWithCapotAndBelot} />)
+    
+    const row = screen.getByTestId('round-row')
+    // We expect 2 icons: Capot (Yellow Crown) and Belot (Blue/Red Crown)
+    // Lucide renders as SVG
+    const svgs = row.querySelectorAll('svg')
+    expect(svgs.length).toBeGreaterThanOrEqual(2)
+  })
 })

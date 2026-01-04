@@ -13,5 +13,6 @@ export interface Round {
     isLitigeResolution?: boolean;
     awardedReserve?: number;
     contestedPoints?: number;
+    belotTeam?: 'team1' | 'team2';
   }
   
