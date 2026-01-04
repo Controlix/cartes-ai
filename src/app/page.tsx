@@ -49,7 +49,11 @@ export default function Home() {
         )}
 
         <div className="flex-1 overflow-y-auto min-h-0">
-          <GameHistory rounds={rounds} />
+          <GameHistory 
+            rounds={rounds} 
+            team1Name={team1Name} 
+            team2Name={team2Name}
+          />
         </div>
 
         <div className="flex-shrink-0">

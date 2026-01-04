@@ -34,6 +34,12 @@ describe('Home Page Integration', () => {
     
     const form = screen.getByRole('form')
     expect(within(form).getByText('Alpha')).toBeInTheDocument()
+
+    // Now check the GameHistory header (it should also show "Alpha")
+    // The history header is inside the main section, let's find it by text
+    // Since there are multiple "Alpha" strings (Header, Form, History), we verify it exists in history area
+    const history = screen.getByText('Alpha', { selector: '.grid-cols-3 .text-center' })
+    expect(history).toBeInTheDocument()
   })
 
 })

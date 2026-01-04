@@ -29,7 +29,7 @@ const ScoreHeader: React.FC<ScoreHeaderProps> = ({
     <header className="sticky top-0 z-50 bg-white border-b shadow-sm p-4 relative">
       <div className="flex justify-between items-center max-w-4xl mx-auto">
         <div className={`flex flex-col items-center flex-1 transition-all ${team1Leads ? 'scale-110 text-blue-600' : ''}`}>
-          <div className="flex items-center gap-1 text-sm font-medium text-gray-500 uppercase">
+          <div className="flex items-center gap-1 text-sm font-medium text-gray-500">
             <EditableName 
               defaultName={team1Name} 
               onNameChange={onTeam1NameChange}
@@ -43,7 +43,7 @@ const ScoreHeader: React.FC<ScoreHeaderProps> = ({
         <div className="text-gray-300 font-light mx-4 text-xl">{translations.header.vs}</div>
         
         <div className={`flex flex-col items-center flex-1 transition-all ${team2Leads ? 'scale-110 text-red-600' : ''}`}>
-          <div className="flex items-center gap-1 text-sm font-medium text-gray-500 uppercase">
+          <div className="flex items-center gap-1 text-sm font-medium text-gray-500">
             {team2Leads && <span>👑</span>}
             <EditableName 
               defaultName={team2Name} 

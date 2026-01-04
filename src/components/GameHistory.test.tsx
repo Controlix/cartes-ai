@@ -27,6 +27,12 @@ describe('GameHistory Component', () => {
     expect(screen.getAllByText('81')).toHaveLength(2)
   })
 
+  it('renders custom team names in the header', () => {
+    render(<GameHistory rounds={mockRounds} team1Name="Alpha" team2Name="Beta" />)
+    expect(screen.getByText('Alpha')).toBeInTheDocument()
+    expect(screen.getByText('Beta')).toBeInTheDocument()
+  })
+
   // Removed text check for icons as they are visual only now
   it('renders the correct number of rows', () => {
     render(<GameHistory rounds={mockRounds} />)
